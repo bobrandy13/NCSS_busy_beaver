@@ -157,8 +157,11 @@ public:
 
       I_step++;
 
-      if (steps >= 10000)
+      if (steps >= 100000) {
+
+        return 0;
         break;
+      }
     }
     cout << endl << "Executed in " << steps << " steps" << endl;
     return steps;
@@ -177,16 +180,26 @@ int main() {
     for (int j = 0; j <= 15; j++) {
 
       for (int k = 0; k <= 15; k++) {
-        if (i == 1 && j == '8' && k == '0')
-          cout << "yes" << endl;
-        vector<char> a;
-        a.push_back('0' + i);
-        a.push_back('0' + j);
-        a.push_back('0' + k);
 
-        Program x(a);
-        int steps = (int)x.execute();
-        max_steps = max(steps, max_steps);
+        for (int s = 0; s <= 15; s++) {
+          for (int q = 0; q <= 15; q++) {
+            for (int t = 0; t <= 15; t++) {
+
+              vector<char> a;
+              a.push_back('0' + i);
+              a.push_back('0' + j);
+              a.push_back('0' + k);
+              a.push_back('0' + s);
+              a.push_back('0' + q);
+              a.push_back('0' + t);
+              /* a.push_back('0' + s); */
+
+              Program x(a);
+              int steps = (int)x.execute();
+              max_steps = max(steps, max_steps);
+            }
+          }
+        }
       }
     }
   }
