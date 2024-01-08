@@ -34,15 +34,18 @@ private:
   }
 
 public:
+  long long steps;
   Program(vector<char> control) {
     this->control = control;
     r0 = 0;
     r1 = 0;
   }
 
-  void execute() {
+  int getSteps() { return (int)steps; }
+
+  long long execute() {
     int I_step = 0;
-    int steps = 0;
+    long long steps = 0;
     while (I_step <= this->control.size()) {
       char command = this->control[I_step];
       /* cout << "current step -> " << command << endl; */
@@ -153,8 +156,12 @@ public:
       r1 %= 16;
 
       I_step++;
+
+      if (steps >= 10000)
+        break;
     }
     cout << endl << "Executed in " << steps << " steps" << endl;
+    return steps;
   }
 };
 
@@ -163,4 +170,25 @@ int main() {
   cout << hex;
   Program program(input);
   program.execute();
+  int max_steps = INT_MIN;
+
+  for (int i = 0; i <= 15; i++) {
+
+    for (int j = 0; j <= 15; j++) {
+
+      for (int k = 0; k <= 15; k++) {
+        if (i == 1 && j == '8' && k == '0')
+          cout << "yes" << endl;
+        vector<char> a;
+        a.push_back('0' + i);
+        a.push_back('0' + j);
+        a.push_back('0' + k);
+
+        Program x(a);
+        int steps = (int)x.execute();
+        max_steps = max(steps, max_steps);
+      }
+    }
+  }
+  cout << max_steps << endl;
 }
