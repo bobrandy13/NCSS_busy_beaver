@@ -48,6 +48,10 @@ public:
       /* cout << "current step -> " << command << endl; */
       steps++;
       switch (command) {
+      case '0':
+        // break out of the looop trust me i didnt think of a better way to do
+        // this im so tired
+        I_step = this->control.size() + 1;
       case '1':
         // Add one to register 0
         this->r0++;
@@ -155,7 +159,7 @@ public:
 };
 
 int main() {
-  vector<char> input{'A', 'E', '7', 'E', '9', '2', '2', '2', '7', 'A'};
+  vector<char> input{'1', '8', '0'};
   cout << hex;
   Program program(input);
   program.execute();
