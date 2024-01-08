@@ -139,8 +139,8 @@ public:
         // Swap the contents of R1 and the memory cell at <address>
         char next_val = this->control[I_step + 1];
         int tmp;
-        tmp = this->r0;
-        this->r0 = convertcharToInt(next_val);
+        tmp = this->r1;
+        this->r1 = convertcharToInt(next_val);
 
         this->control[next_val] = tmp;
         I_step++;
