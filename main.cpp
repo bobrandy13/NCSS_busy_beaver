@@ -1,10 +1,11 @@
 #include <iostream>
+#include <tuple>
 #include <vector>
 
 using namespace std;
 
 class Program {
-  vector<char> control;
+  vector<int> control;
   int r0, r1;
 
 private:
@@ -35,7 +36,7 @@ private:
 
 public:
   long long steps;
-  Program(vector<char> control) {
+  Program(vector<int> control) {
     this->control = control;
     r0 = 0;
     r1 = 0;
@@ -46,104 +47,119 @@ public:
   long long execute() {
     int I_step = 0;
     long long steps = 0;
+    this->control.push_back(0);
+    this->control.push_back(0);
+    this->control.push_back(0);
+    this->control.push_back(0);
     while (I_step <= this->control.size()) {
-      char command = this->control[I_step];
+      int command = this->control[I_step];
       /* cout << "current step -> " << command << endl; */
       steps++;
       switch (command) {
-      case '0':
+      case 0:
         // break out of the looop trust me i didnt think of a better way to do
         // this im so tired
         I_step = this->control.size() + 1;
-      case '1':
+      case 1:
         // Add one to register 0
         this->r0++;
         break;
-      case '2':
+      case 2:
         // Add one to register 0
         this->r0--;
         break;
-      case '3':
+      case 3:
         this->r1++;
         break;
-      case '4':
+      case 4:
         this->r1--;
         break;
-      case '5':
-        this->r0 = calculateWrap(this->r0 + this->r1);
+      case 5:
+        this->r0 = (this->r0 + this->r1);
         break;
-      case '6':
-        this->r0 = calculateWrap(this->r0 - this->r1);
+      case 6:
+        this->r0 = (this->r0 - this->r1);
         break;
-      case '7':
+      case 7:
         // print command;
-        cout << r0;
+        /* cout << r0; */
         break;
-      case '8': {
+      case 8: {
 
         // look at the next number, and do the loop;
-        char address = this->control[I_step + 1];
+        int address = this->control[I_step + 1];
         if (r0 != 0) {
           // jump to address if this is the case;
 
-          I_step = convertcharToInt(address) - 1;
+          I_step = (address)-1;
         } else {
           I_step++;
         }
         break;
       }
-      case 'A': {
+      case 9: {
+        int address = this->control[I_step + 1];
+        if (r0 == 0) {
+          // jump to address if this is the case;
+
+          I_step = (address)-1;
+        } else {
+          I_step++;
+        }
+        break;
+      }
+      case 10: {
         // load value into r0
         //<address> is the number in the cell after the cell containing the
         // instruction (!= means "is not equal to")
-        char next_val = this->control[I_step + 1];
-        this->r0 = convertcharToInt(next_val);
+        int next_val = this->control[I_step + 1];
+        this->r0 = (next_val);
         I_step++;
         break;
       }
-      case 'B': {
+      case 11: {
         // load value into r1
         // <address> is the number in the cell after the cell containing the
         // instruction (== means "is equal to")
-        char next_val = this->control[I_step + 1];
+        int next_val = this->control[I_step + 1];
         this->r1 = convertcharToInt(next_val);
         I_step++;
         break;
       }
-      case 'C': {
+      case 12: {
         // 	 Copy the contents of R0 into the memory cell at <address>
-        char next_val = this->control[I_step + 1];
+        int next_val = this->control[I_step + 1];
         this->control[next_val] = this->r0;
         I_step++;
         break;
       }
-      case 'D': {
+      case 13: {
         //  Copy the contents of R1 into the memory cell at <address>
-        char next_val = this->control[I_step + 1];
+        int next_val = this->control[I_step + 1];
         this->control[next_val] = this->r1;
         I_step++;
         break;
       }
-      case 'E': {
+      case 14: {
         // swap the memory and r0 pointer;
         // Swap the contents of R0 and the memory cell at <address>
-        int next_val = convertcharToInt(this->control[I_step + 1]);
+        int next_val = (this->control[I_step + 1]);
 
         // swap
         int tmp;
         tmp = this->r0;
-        this->r0 = convertcharToInt(this->control[next_val]);
+        this->r0 = (this->control[next_val]);
 
         this->control[next_val] = tmp;
         I_step++;
         break;
       }
-      case 'F': {
+      case 15: {
         // Swap the contents of R1 and the memory cell at <address>
         char next_val = this->control[I_step + 1];
         int tmp;
         tmp = this->r1;
-        this->r1 = convertcharToInt(next_val);
+        this->r1 = (next_val);
 
         this->control[next_val] = tmp;
         I_step++;
@@ -157,26 +173,34 @@ public:
 
       I_step++;
 
-      if (steps >= 100000) {
+      if (steps >= 10000) {
 
         return 0;
         break;
       }
     }
-    cout << endl << "Executed in " << steps << " steps" << endl;
+    /* cout << endl << "Executed in " << steps << " steps" << endl; */
     return steps;
   }
 };
 
 int main() {
-  vector<char> input{'1', '8', '0'};
-  cout << hex;
-  Program program(input);
-  program.execute();
+  ios_base::sync_with_stdio(false);
+  cin.tie(NULL);
+  vector<char> y;
+  /* program.execute(); */
   int max_steps = INT_MIN;
+  tuple<int, vector<int>> gmax;
 
-  for (int i = 0; i <= 15; i++) {
+  // vector<int> input_array {1, 1, 1, 8, 7, 3, 5, 8};
+  vector<int> input_array{14, 14, 7, 12, 14, 14, 15, 2,
+                          12, 15, 8, 0,  0,  0,  4,  5};
 
+  // Program x(input_array);
+  // int steps = x.execute();
+  // cout << steps;
+
+  for (int i = 1; i <= 15; i++) {
     for (int j = 0; j <= 15; j++) {
 
       for (int k = 0; k <= 15; k++) {
@@ -184,24 +208,77 @@ int main() {
         for (int s = 0; s <= 15; s++) {
           for (int q = 0; q <= 15; q++) {
             for (int t = 0; t <= 15; t++) {
+              for (int d = 0; d <= 15; d++) {
+                for (int y = 0; y <= 15; y++) {
+                  for (int o = 0; o <= 15; o++) {
+                    /* for (int u = 0; u <= 15; u++) { */
 
-              vector<char> a;
-              a.push_back('0' + i);
-              a.push_back('0' + j);
-              a.push_back('0' + k);
-              a.push_back('0' + s);
-              a.push_back('0' + q);
-              a.push_back('0' + t);
-              /* a.push_back('0' + s); */
+                    vector<int> a;
+                    a.push_back(i);
+                    a.push_back(j);
+                    a.push_back(k);
+                    a.push_back(s);
+                    a.push_back(q);
+                    a.push_back(t);
+                    a.push_back(d);
+                    a.push_back(y);
+                    a.push_back(o);
+                    a.push_back(0);
+                    /* a.push_back(d); */
+                    //                   a.push_back('0' + t);
+                    //                   a.push_back('0' + d);
+                    //                   a.push_back('0' + y);
+                    //                   a.push_back('8');
+                    //                   a.push_back('0');
+                    //
 
-              Program x(a);
-              int steps = (int)x.execute();
-              max_steps = max(steps, max_steps);
+                    /* for (int b : a) */
+                    /*   cout << b << ""; */
+                    Program x(a);
+                    int steps = (int)x.execute();
+                    // cout << a.size() << endl;
+                    if (steps > get<0>(gmax)) {
+                      // cout << steps << endl;
+                      for (int b : a)
+                        cout << b << "";
+                      cout << endl;
+                      cout << steps << endl;
+                      //                     vector<char> b;
+                      //                     b.push_back('e');
+                      //                     b.push_back('0' + i);
+                      //                     b.push_back('0' + j);
+                      //                     b.push_back('8');
+                      //                     b.push_back('0');
+                      //                     b.push_back('0' + k);
+                      //                     b.push_back('0' + s);
+                      //                     b.push_back('0' + q);
+                      //                     b.push_back('0' + t);
+                      //                     b.push_back('0' + d);
+                      //                     b.push_back('0' + y);
+                      //                     b.push_back('8');
+                      //                     b.push_back('0');
+
+                      gmax = make_tuple(steps, a);
+                      //                     cout << get<0>(gmax) << endl;
+                      cout << endl;
+                    }
+                    // }
+                    /* } */
+                  }
+                }
+              }
             }
           }
         }
       }
     }
   }
-  cout << max_steps << endl;
+  //   }
+  // }
+
+  // for (char a : get<1>(gmax))
+  //   cout << a << endl;
+
+  // cout << get<1>(gmax).size() << endl;
+  // cout << max_steps << endl;
 }
